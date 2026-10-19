@@ -1,0 +1,32 @@
+services:
+  cassandra:
+    image: cassandra:4.1
+    container_name: livechat-cassandra
+    ports: ["9042:9042"]
+    environment:
+      CASSANDRA_CLUSTER_NAME: livechat
+      MAX_HEAP_SIZE: 512M
+      HEAP_NEWSIZE: 128M
+    volumes: [cassandra_data:/var/lib/cassandra]
+    healthcheck:
+      test: ["CMD-SHELL", "cqlsh -e 'describe keyspaces' || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 40s
+
+  redis:
+    image: redis:7-alpine
+    container_name: livechat-redis
+    ports: ["6379:6379"]
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes: [redis_data:/data]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  cassandra_data:
+  redis_data:

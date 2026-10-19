@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard nhân viên</title>
+<style>
+  :root{--bg:#f4f1ee;--panel:#fff;--ink:#1f2937;--muted:#6b7280;--brand:#c2410c;--brand-d:#9a3412;--line:#e7e0da;--soft:#faf7f5;--ok:#16a34a;--warn:#d97706}
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{font:14px/1.45 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--ink);background:var(--bg)}
+  button{font:inherit;cursor:pointer}
+  .hidden{display:none!important}
+
+  /* ---- dang nhap ---- */
+  #login{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:50}
+  .login-box{background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px;width:340px;display:flex;flex-direction:column;gap:12px}
+  .login-box h1{margin:0;font-size:20px;color:var(--brand)}
+  .login-box p{margin:0;color:var(--muted)}
+  .login-box input{border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit;outline:none}
+  .login-box input:focus{border-color:var(--brand)}
+  #login-err{color:#b91c1c;font-size:12px;min-height:16px}
+
+  /* ---- khung chinh ---- */
+  .app{display:grid;grid-template-columns:300px minmax(0,1fr) 270px;grid-template-rows:52px minmax(0,1fr);height:100%}
+  .top{grid-column:1/-1;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;padding:0 16px}
+  .top b{color:var(--brand);font-size:16px}
+  .top .sp{flex:1}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+  .dot{width:9px;height:9px;border-radius:50%;background:#9ca3af;display:inline-block;flex:none}
+  .dot.on{background:var(--ok)}.dot.warn{background:var(--warn)}
+  .link{border:0;background:transparent;color:var(--muted);text-decoration:underline;font-size:12px}
+
+  .left,.right{background:var(--panel);overflow-y:auto;min-height:0}
+  .left{border-right:1px solid var(--line)}
+  .right{border-left:1px solid var(--line);padding:14px}
+  .center{display:flex;flex-direction:column;min-width:0;min-height:0;background:var(--soft)}
+
+  .sec-h{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 6px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+  .count{background:#efe9e4;color:var(--ink);border-radius:10px;padding:1px 8px;font-size:11px}
+  .item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid #f3eeea;cursor:pointer}
+  .item:hover{background:var(--soft)}
+  .item.sel{background:#fff1e8;box-shadow:inset 3px 0 0 var(--brand)}
+  .item-main{flex:1;min-width:0}
+  .item-title{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px}
+  .item-sub{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .badge{background:#dc2626;color:#fff;border-radius:11px;min-width:22px;height:22px;padding:0 6px;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+  .empty{padding:12px 14px;color:var(--muted);font-size:13px}
+  .btn{border:0;background:var(--brand);color:#fff;border-radius:9px;padding:7px 14px;font-weight:600}
+  .btn:hover{background:var(--brand-d)}
+  .btn:disabled{opacity:.5;cursor:default}
+  .btn.small{padding:5px 11px;font-size:13px}
+  .btn.ghost{background:#fff;color:var(--brand);border:1px solid var(--brand)}
+  .btn.danger{background:#fff;color:#b91c1c;border:1px solid #fca5a5}
+
+  /* ---- khung chat ---- */
+  .placeholder{margin:auto;color:var(--muted);text-align:center;padding:24px}
+  .chat-h{background:#fff;border-bottom:1px solid var(--line);padding:10px 16px;display:flex;align-items:center;gap:12px}
+  .chat-h h2{margin:0;font-size:16px}
+  .chat-h .sub{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
+  .chat-h .grow{flex:1;min-width:0}
+  #back{display:none;border:0;background:transparent;font-size:18px}
+  .banner{background:#fef3c7;color:#92400e;padding:6px 14px;font-size:12px;text-align:center}
+  #msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px;min-height:0}
+  .msg{max-width:72%;padding:8px 12px;border-radius:14px;white-space:pre-wrap;overflow-wrap:anywhere}
+  .msg small{display:block;font-size:10.5px;opacity:.65;margin-top:3px}
+  .msg.me{align-self:flex-end;background:var(--brand);color:#fff;border-bottom-right-radius:4px}
+  .msg.them{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px}
+  .sys{align-self:center;font-size:12px;color:var(--muted);background:#efe9e4;padding:4px 10px;border-radius:10px}
+  .more{align-self:center;border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:12px;padding:4px 12px;font-size:12px}
+  .quick{display:flex;gap:6px;flex-wrap:wrap;padding:8px 14px 0;background:#fff;border-top:1px solid var(--line)}
+  .chip{border:1px solid var(--line);background:var(--soft);border-radius:14px;padding:3px 10px;font-size:12px;color:var(--ink)}
+  .chip:hover{border-color:var(--brand);color:var(--brand)}
+  .composer{display:flex;gap:8px;padding:10px 14px 14px;background:#fff}
+  #input{flex:1;resize:none;border:1px solid var(--line);border-radius:12px;padding:9px 11px;font:inherit;max-height:110px;outline:none}
+  #input:focus{border-color:var(--brand)}#input:disabled{background:#f3f4f6}
+
+  /* ---- thong tin khach ---- */
+  .right h3{margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+  .kv{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px dashed #eee;font-size:13px}
+  .kv span:first-child{color:var(--muted)}
+  .prev{margin-top:16px}
+  .prev .item{padding:8px 4px}
+  .chip-st{font-size:11px;border-radius:8px;padding:1px 7px;background:#efe9e4}
+  .chip-st.active{background:#dcfce7;color:#166534}.chip-st.waiting{background:#fef3c7;color:#92400e}
+
+  .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#1f2937;color:#fff;padding:9px 16px;border-radius:10px;z-index:60;font-size:13px;max-width:90vw}
+
+  @media (max-width:1100px){.app{grid-template-columns:280px minmax(0,1fr)}.right{display:none}}
+  @media (max-width:760px){
+    .app{grid-template-columns:minmax(0,1fr)}
+    .center{display:none}
+    body.show-chat .left{display:none}
+    body.show-chat .center{display:flex}
+    #back{display:inline-block}
+  }
+</style>
+</head>
+<body>
+
+<div id="login">
+  <div class="login-box">
+    <h1>☕ Dashboard nhân viên</h1>
+    <p>Nhập tên nhân viên để bắt đầu nhận khách.</p>
+    <input id="login-name" maxlength="32" placeholder="vd: nv1" autocomplete="off">
+    <input id="login-key" type="password" maxlength="64" placeholder="Mã nhân viên (nếu server yêu cầu)" autocomplete="off">
+    <div id="login-err"></div>
+    <button class="btn" id="login-btn">Vào làm việc</button>
+  </div>
+</div>
+
+<div class="app hidden" id="app">
+  <div class="top">
+    <b>☕ Hạt Nhỏ · Nhân viên</b>
+    <span id="who" class="pill"></span>
+    <span class="sp"></span>
+    <span class="pill"><span class="dot" id="feed-dot"></span><span id="feed-text">Đang kết nối…</span></span>
+    <button class="link" id="logout">Đăng xuất</button>
+  </div>
+
+  <aside class="left">
+    <div class="sec-h"><span>Hàng chờ</span><span class="count" id="queue-count">0</span></div>
+    <div id="queue"></div>
+    <div class="sec-h"><span>Đang phụ trách</span><span class="count" id="mine-count">0</span></div>
+    <div id="mine"></div>
+    <div class="sec-h"><span>Lịch sử của tôi</span><span class="count" id="hist-count">0</span></div>
+    <div id="history"></div>
+  </aside>
+
+  <section class="center">
+    <div class="placeholder" id="placeholder">Chọn một cuộc trò chuyện ở bên trái,<br>hoặc bấm <b>Nhận</b> ở khách đang chờ.</div>
+    <div class="chat-h hidden" id="chat-h">
+      <button id="back" aria-label="Quay lai danh sach">←</button>
+      <div class="grow"><h2 id="c-title"></h2><div class="sub"><span class="dot" id="c-dot"></span><span id="c-sub"></span></div></div>
+      <button class="btn danger small hidden" id="close-btn">Kết thúc chat</button>
+    </div>
+    <div class="banner hidden" id="banner"></div>
+    <div id="msgs" class="hidden"></div>
+    <div class="quick hidden" id="quick"></div>
+    <div class="composer hidden" id="composer">
+      <textarea id="input" rows="1" maxlength="2000" placeholder="Nhập tin nhắn… (Enter để gửi, Shift+Enter xuống dòng)" disabled></textarea>
+      <button class="btn" id="send" disabled>Gửi</button>
+    </div>
+  </section>
+
+  <aside class="right" id="right"></aside>
+</div>
+
+<script src="agent.js"></script>
+</body>
+</html>

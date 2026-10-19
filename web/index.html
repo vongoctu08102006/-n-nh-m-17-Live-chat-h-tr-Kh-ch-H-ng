@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hạt Nhỏ Coffee - Cà phê &amp; dụng cụ pha chế</title>
+<style>
+  :root{--bg:#faf7f5;--card:#fff;--ink:#1f2937;--muted:#6b7280;--brand:#c2410c;--brand-d:#9a3412;--line:#e7e0da}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+  header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
+  .bar{display:flex;align-items:center;gap:24px;height:64px}
+  .logo{font-weight:800;font-size:20px;color:var(--brand);text-decoration:none}
+  nav{display:flex;gap:18px;flex:1}
+  nav a{color:var(--ink);text-decoration:none;font-size:14px}
+  nav a:hover{color:var(--brand)}
+  .cart{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-size:14px;cursor:pointer}
+  .hero{background:linear-gradient(135deg,#7c2d12,#c2410c 60%,#ea580c);color:#fff;padding:56px 0}
+  .hero h1{margin:0 0 10px;font-size:34px}
+  .hero p{margin:0 0 20px;max-width:520px;opacity:.95}
+  .btn{display:inline-block;border:0;background:#fff;color:var(--brand-d);font-weight:700;border-radius:10px;padding:11px 20px;cursor:pointer;font-size:15px}
+  h2{margin:36px 0 16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+  .pic{height:140px;display:flex;align-items:center;justify-content:center;font-size:58px}
+  .info{padding:14px;display:flex;flex-direction:column;gap:6px;flex:1}
+  .info h3{margin:0;font-size:16px}
+  .info p{margin:0;color:var(--muted);font-size:13px;flex:1}
+  .price{font-weight:700;color:var(--brand)}
+  .add{border:1px solid var(--brand);background:#fff;color:var(--brand);border-radius:10px;padding:8px;font-weight:600;cursor:pointer}
+  .add:hover{background:var(--brand);color:#fff}
+  .policies{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:40px}
+  .pol{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
+  .pol b{display:block;margin-bottom:4px}
+  footer{border-top:1px solid var(--line);background:#fff;padding:22px 0;color:var(--muted);font-size:13px;text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap bar">
+    <a class="logo" href="#">☕ Hạt Nhỏ Coffee</a>
+    <nav><a href="#sp">Sản phẩm</a><a href="#cs">Chính sách</a><a href="#" onclick="LiveChat.open();return false">Liên hệ</a></nav>
+    <button class="cart">🛒 Giỏ hàng (<span id="cnt">0</span>)</button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <h1>Cà phê rang mới mỗi tuần</h1>
+    <p>Hạt cà phê nguyên chất và dụng cụ pha chế chọn lọc. Cần tư vấn chọn loại phù hợp? Nhân viên của chúng tôi luôn sẵn sàng.</p>
+    <button class="btn" onclick="LiveChat.open()">💬 Chat với nhân viên</button>
+  </div>
+</section>
+
+<main class="wrap">
+  <h2 id="sp">Sản phẩm nổi bật</h2>
+  <div class="grid" id="grid"></div>
+
+  <h2 id="cs">Chính sách</h2>
+  <div class="policies">
+    <div class="pol"><b>🚚 Giao hàng</b>Miễn phí cho đơn từ 300.000đ. Nhận hàng trong 1-3 ngày.</div>
+    <div class="pol"><b>↩️ Đổi trả</b>Đổi trả trong 7 ngày nếu sản phẩm lỗi hoặc không đúng mô tả.</div>
+    <div class="pol"><b>💳 Thanh toán</b>Hỗ trợ COD, chuyển khoản và ví điện tử.</div>
+  </div>
+</main>
+
+<footer>© 2026 Hạt Nhỏ Coffee · Trang web giả lập phục vụ đồ án Live Chat</footer>
+
+<script>
+  var items = [
+    ["☕","Arabica Cầu Đất 500g","Hậu vị ngọt, acid nhẹ, rang vừa.","189.000đ","#fde68a"],
+    ["🫘","Robusta Buôn Ma Thuột 500g","Đậm, đắng, thích hợp pha phin.","145.000đ","#d6d3d1"],
+    ["🫖","Phin nhôm cao cấp","Phin 3 chi tiết, kích thước vừa.","65.000đ","#bfdbfe"],
+    ["⚙️","Máy xay cà phê tay","Lưỡi thép, chỉnh được 6 độ mịn.","520.000đ","#fecaca"],
+    ["🥛","Bình pha lạnh Cold Brew 1L","Thân thủy tinh, lọc inox.","240.000đ","#bbf7d0"],
+    ["🎁","Combo quà tặng","Hạt 250g, phin và ly sứ.","310.000đ","#ddd6fe"]
+  ];
+  var grid = document.getElementById("grid"), cnt = 0;
+  items.forEach(function (it) {
+    var c = document.createElement("div"); c.className = "card";
+    c.innerHTML = '<div class="pic" style="background:' + it[4] + '">' + it[0] + '</div>' +
+      '<div class="info"><h3></h3><p></p><div class="price"></div><button class="add">Thêm vào giỏ</button></div>';
+    c.querySelector("h3").textContent = it[1];
+    c.querySelector("p").textContent = it[2];
+    c.querySelector(".price").textContent = it[3];
+    c.querySelector(".add").onclick = function () { document.getElementById("cnt").textContent = ++cnt; };
+    grid.appendChild(c);
+  });
+</script>
+
+<!-- Widget chat: chi can 1 dong nay -->
+<script src="chat-widget.js"></script>
+</body>
+</html>

@@ -23,13 +23,17 @@ Hệ thống chat hỗ trợ khách hàng thời gian thực: khách chat với 
 ## Cài đặt và chạy
 
 Yêu cầu: Docker Desktop, Python 3.12 (không dùng 3.13).
-Chạy vào thư mục và cài venvs
+```Chạy vào thư mục và cài venvs
 cd "C:\Users\admin\OneDrive\Documents\code\Đồ án Live Chat Khách hàng\livechat"
 C:\venvs\livechat\Scripts\Activate.ps1
 $env:PYTHONUTF8 = "1"
-Chay server
+```Chay server
 $env:AGENT_KEY = "nhanvientuvan"
 powershell -ExecutionPolicy Bypass -File scripts\start_demo.ps1 -NoBrower
+
+```TẠO LINK TRANG KHÁCH
+cloudflared tunnel --url http://127.0.0.1:8001
+
 
 ```powershell
 python -m venv C:\venvs\livechat            # hoặc py -3.12 -m venv ...
@@ -37,7 +41,17 @@ C:\venvs\livechat\Scripts\Activate.ps1
 pip install -r requirements.txt
 $env:PYTHONUTF8 = "1"
 ```
+```nap 1 trieu dong powershell
+python scripts/bulk_seed.py --demo-agent nv1
 
+```do do tre
+python scripts/scale_report.py
+
+```Chay demo ngam
+-Bat 3 trang PowerShell da cai venz
+python scripts/stream_writer.py
+python scripts/monitor_stream.py
+docker exec -it livechat-cassandra cqlsh
 
 
 **Cách thủ công:**

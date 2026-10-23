@@ -35,12 +35,6 @@ powershell -ExecutionPolicy Bypass -File scripts\start_demo.ps1 -NoBrower
 cloudflared tunnel --url http://127.0.0.1:8001
 
 
-```powershell
-python -m venv C:\venvs\livechat            # hoặc py -3.12 -m venv ...
-C:\venvs\livechat\Scripts\Activate.ps1
-pip install -r requirements.txt
-$env:PYTHONUTF8 = "1"
-```
 ```nap 1 trieu dong powershell
 python scripts/bulk_seed.py --demo-agent nv1
 
